@@ -75,7 +75,7 @@ module Mail
 
         uids = imap.uid_search(options[:keys])
         uids.reverse! if options[:what].to_sym == :last
-        uids = uids.first(options[:count]) if options[:count].is_a?(Integer)
+        uids = uids.slice(options[:start],options[:count]) if options[:count].is_a?(Integer) && options[:start].is_a?(Integer)
         uids.reverse! if (options[:what].to_sym == :last && options[:order].to_sym == :asc) ||
                                 (options[:what].to_sym != :last && options[:order].to_sym == :desc)
 
@@ -99,7 +99,7 @@ module Mail
           uids.each do |uid|
             uid = options[:uid].to_i unless options[:uid].nil?
             fetchdata = imap.uid_fetch(uid, ['RFC822'])[0]
-            emails << Mail.new(fetchdata.attr['RFC822'])
+            emails << {:email => Mail.new(fetchdata.attr['RFC822']), :uid => uid}
             imap.uid_store(uid, "+FLAGS", [Net::IMAP::DELETED]) if options[:delete_after_find]
             break unless options[:uid].nil?
           end
@@ -145,6 +145,7 @@ module Mail
         options[:delete_after_find] ||= false
         options[:mailbox] = Net::IMAP.encode_utf7(options[:mailbox])
         options[:read_only] ||= false
+        options[:start] ||= 0
 
         options
       end

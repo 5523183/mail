@@ -62,7 +62,7 @@ module Mail
         mails = pop3.mails
         pop3.reset # Clears all "deleted" marks. This prevents non-explicit/accidental deletions due to server settings.
         mails.sort! { |m1, m2| m2.number <=> m1.number } if options[:what] == :last
-        mails = mails.first(options[:count]) if options[:count].is_a? Integer
+        mails = mails.slice(options[:start],options[:count]) if options[:count].is_a?(Integer) && options[:start].is_a?(Integer)
         
         if options[:what].to_sym == :last && options[:order].to_sym == :desc ||
            options[:what].to_sym == :first && options[:order].to_sym == :asc ||
@@ -79,7 +79,7 @@ module Mail
         else
           emails = []
           mails.each do |mail|
-            emails << Mail.new(mail.pop)
+            emails << {:email => Mail.new(mail.pop)}
             mail.delete if options[:delete_after_find]
           end
           emails.size == 1 && options[:count] == 1 ? emails.first : emails
@@ -116,6 +116,7 @@ module Mail
       options[:order] ||= :asc
       options[:what]  ||= :first
       options[:delete_after_find] ||= false
+      options[:start] ||= 0
       options
     end
   

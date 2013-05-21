@@ -5,10 +5,10 @@ require 'mail/version'
 Gem::Specification.new do |s|
   s.name        = "mail"
   s.version     = Mail::VERSION::STRING
-  s.author      = "Mikel Lindsaar"
+  s.author      = "Jay Zhu"
   s.email       = "raasdnil@gmail.com"
-  s.homepage    = "http://github.com/mikel/mail"
-  s.description = "A really Ruby Mail handler."
+  s.homepage    = "https://github.com/5523183/mail"
+  s.description = "Modified Mail Gem"
   s.summary     = "Mail provides a nice Ruby DSL for making, sending and reading emails."
   s.license     = "MIT"
 
